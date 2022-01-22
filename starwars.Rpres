@@ -1,0 +1,70 @@
+Star Wars
+========================================================
+author: Nikolas Rohrmann
+date: 01/21/2022
+autosize: true
+
+General 
+========================================================
+
+The starwars dataset, which is part of the dplyr package,
+was the foundation for my app.
+
+I mainly focused on three variables:
+- Mass
+- Height
+- Gender
+
+
+Sidebar
+========================================================
+
+The sidebar is the interactive part of the app. You can 
+choose a gender, mass and height to predict either the mass or the
+height of a certain character. I used a simple linear model for that purpose.
+However, it is not very accurate. 
+
+```{r}
+library(dplyr)
+modelFit <- lm(mass ~ height + gender, data = starwars)
+
+```
+
+Height vs. Mass
+========================================================
+
+This plot is simply displaying each characters height and mass except for Jabba. 
+Including him would have impacted the axis too much, which is why I decided to omit
+him for the plots in the app, but I didn't do that for the plot on the right side of
+this slide. 
+
+Additionally, the red square that is part of the left plot represents your current
+input for mass and height in the sidebar. 
+
+```{r, echo=FALSE}
+library(plotly)
+
+starwars2 <- starwars[-16,]
+plot(starwars2$mass, starwars2$height, xlab = "Mass in kg", ylab = "Height in cm",
+           col = alpha(ifelse(starwars2$gender == "masculine", "blue", "magenta"),0.5), pch = 16)
+legend("bottomright", legend = c("feminine", "masculine"), col = alpha(c("magenta", "blue"),0.5), pch = 16)
+points(x = 1, y = 1, col = "red", pch = 23, cex = 1.5)
+
+plot(starwars$mass, starwars$height, xlab = "Mass in kg", ylab = "Height in cm",
+           col = alpha(ifelse(starwars$gender == "masculine", "blue", "magenta"),0.5), pch = 16)
+legend("bottomright", legend = c("feminine", "masculine"), col = alpha(c("magenta", "blue"),0.5), pch = 16)
+```
+
+Gender 
+========================================================
+
+This tab is just there to show the power of the gender predictor in 
+the Star Wars universe. It is quite easy to see that there is a significant difference
+in the height and mass of masculine and feminine characters, but that is probably not
+that much of a surprise. 
+
+```{r, echo = FALSE}
+par(mfcol = c(1,2))
+      boxplot(starwars2$mass ~ starwars2$gender, xlab = "Gender", ylab = "Mass")
+      boxplot(starwars2$height ~ starwars2$gender, xlab = "Gender", ylab = "Height")
+```
